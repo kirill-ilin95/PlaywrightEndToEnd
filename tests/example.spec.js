@@ -23,7 +23,7 @@ test("Login with valide credentials", async ({ page }) => {
   await page.screenshot({ path: "screenshot.png" });
 });
 
-test("Childe browser windows page handle", async ({ browser }) => {
+test("Childe browser window page handle", async ({ browser }) => {
   const context = await browser.newContext();
   const page = await context.newPage();
   await page.goto("https://rahulshettyacademy.com/loginpagePractise/");
