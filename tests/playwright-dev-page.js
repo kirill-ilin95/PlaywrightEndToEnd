@@ -27,6 +27,7 @@ exports.PlaywrightDevPage = class PlaywrightDevPage {
     this.buttonAccepteTerms = page.locator("#terms");
     this.titles = page.locator(".card-body a");
     this.dropdown = page.locator("select.form-control");
+    this.blinkingText = page.locator("[href*='documents-request']");
   }
 
   async goto(first) {
@@ -69,6 +70,7 @@ exports.PlaywrightDevPage = class PlaywrightDevPage {
     await expect(this.buttonAccepteTerms).toBeChecked();
     await this.buttonAccepteTerms.uncheck();
     expect(await this.buttonAccepteTerms.isChecked()).toBeFalsy();
+    await expect(this.blinkingText).toHaveAttribute("class", "blinkingText");
     await this.singInButton.click();
     //For Stability
     console.log(await this.titles.first().textContent());

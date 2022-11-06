@@ -3,7 +3,7 @@ const { PlaywrightDevPage } = require("./playwright-dev-page");
 
 test("getting started should contain table of contents", async ({ page }) => {
   const playwrightDev = new PlaywrightDevPage(page);
-  await playwrightDev.goto();
+  await playwrightDev.goto("first");
   await playwrightDev.search("Test");
   await playwrightDev.clickAlertButton();
   await playwrightDev.choseDate();
@@ -16,9 +16,26 @@ test("Incorect login, checking errore messege", async ({ page }) => {
   await page.screenshot({ path: "screenshot.png" });
 });
 
-test.only("Login with valide credentials", async ({ page }) => {
+test("Login with valide credentials", async ({ page }) => {
   const playwrightDev = new PlaywrightDevPage(page);
   await playwrightDev.goto();
   await playwrightDev.loginWithValidCredentials();
   await page.screenshot({ path: "screenshot.png" });
+});
+
+test("Childe browser windows page handle", async ({ browser }) => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  await page.goto("https://rahulshettyacademy.com/loginpagePractise/");
+  const documentLink = page.locator("[href*='documents-request']");
+  const [newPage] = await Promise.all([
+    context.waitForEvent("page"),
+    documentLink.click(),
+  ]);
+  const text = await newPage.locator(".red").textContent();
+  const arrayText = text.split("@");
+  const domain = arrayText[1].split(" ")[0];
+  console.log(domain);
+  await page.locator("#username").type(domain);
+  console.log(await page.locator("#username").textContent());
 });

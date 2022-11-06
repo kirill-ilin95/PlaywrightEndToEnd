@@ -52,6 +52,7 @@ const config = {
       name: "chromium",
       use: {
         ...devices["Desktop Chrome"],
+        screenshot: "on",
       },
     },
 
@@ -59,6 +60,7 @@ const config = {
       name: "firefox",
       use: {
         ...devices["Desktop Firefox"],
+        screenshot: "on",
       },
     },
 
@@ -66,6 +68,7 @@ const config = {
       name: "webkit",
       use: {
         ...devices["Desktop Safari"],
+        screenshot: "on",
       },
     },
 
