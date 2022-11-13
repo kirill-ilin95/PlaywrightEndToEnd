@@ -11,16 +11,14 @@ test("getting started should contain table of contents", async ({ page }) => {
 
 test("Incorect login, checking errore messege", async ({ page }) => {
   const playwrightDev = new PlaywrightDevPage(page);
-  await playwrightDev.goto();
+  await playwrightDev.goto("second");
   await playwrightDev.checkErrorMessege();
-  await page.screenshot({ path: "screenshot.png" });
 });
 
 test("Login with valide credentials", async ({ page }) => {
   const playwrightDev = new PlaywrightDevPage(page);
-  await playwrightDev.goto();
+  await playwrightDev.goto("first");
   await playwrightDev.loginWithValidCredentials();
-  await page.screenshot({ path: "screenshot.png" });
 });
 
 test("Childe browser window page handle", async ({ browser }) => {
@@ -38,4 +36,10 @@ test("Childe browser window page handle", async ({ browser }) => {
   console.log(domain);
   await page.locator("#username").type(domain);
   console.log(await page.locator("#username").textContent());
+});
+
+test.only("Create account and save credentials", async ({ page }) => {
+  const playwrightDev = new PlaywrightDevPage(page);
+  await playwrightDev.goto();
+  await playwrightDev.clickOnRegisterButtonOnLoginPage();
 });

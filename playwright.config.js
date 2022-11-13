@@ -53,6 +53,7 @@ const config = {
       use: {
         ...devices["Desktop Chrome"],
         screenshot: "on",
+        trace: "on",
       },
     },
 

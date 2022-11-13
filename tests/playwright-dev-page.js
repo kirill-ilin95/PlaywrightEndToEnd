@@ -1,4 +1,4 @@
-const { expect } = require("@playwright/test");
+const { expect, Math } = require("@playwright/test");
 
 exports.PlaywrightDevPage = class PlaywrightDevPage {
   constructor(page) {
@@ -28,18 +28,47 @@ exports.PlaywrightDevPage = class PlaywrightDevPage {
     this.titles = page.locator(".card-body a");
     this.dropdown = page.locator("select.form-control");
     this.blinkingText = page.locator("[href*='documents-request']");
+    this.loginPageRegisterButton = page.locator(".text-reset");
+    this.registerButton = page.locator('[type="submit"]');
+    this.firstNameField = page.locator("#firstName");
+    this.lastNameField = page.locator("#lastName");
+    this.emailField = page.locator("#userEmail");
+    this.mobileNumberField = page.locator("#userMobile");
+    this.passwordField = page.locator("#userPassword");
+    this.confirmPasswordField = page.locator("#confirmPassword");
+    this.checkboxConfirmAge = page.locator('[type="checkbox"]');
+    this.alertUserExisting = page.locator("#toast-container div div");
   }
 
-  async goto(first) {
-    if (first) {
+  async goto(param) {
+    if (param == "first") {
       await this.page.goto("https://testautomationpractice.blogspot.com/");
       await expect(this.page).toHaveTitle("Automation Testing Practice");
-    } else {
+    } else if (param == "second") {
       await this.page.goto("https://rahulshettyacademy.com/loginpagePractise/");
       await expect(this.page).toHaveTitle(
         "LoginPage Practise | Rahul Shetty Academy"
       );
+    } else {
+      await this.page.goto("https://rahulshettyacademy.com/client");
+      await expect(this.page).toHaveTitle("Let's Shop");
     }
+  }
+
+  async clickOnRegisterButtonOnLoginPage() {
+    await this.loginPageRegisterButton.click();
+    await expect(this.registerButton).toBeVisible();
+    await this.firstNameField.fill("test123321");
+    await this.lastNameField.fill("test123321");
+    await this.emailField.fill("test123321@gmail.com");
+    await this.mobileNumberField.fill("4387777777");
+    await this.passwordField.fill("!Test123321@gmail.com");
+    await this.confirmPasswordField.fill("!Test123321@gmail.com");
+    await this.checkboxConfirmAge.click();
+    await this.registerButton.click();
+    await expect(this.alertUserExisting).toHaveText(
+      " User already exisits with this Email Id! "
+    );
   }
 
   async search(text) {
