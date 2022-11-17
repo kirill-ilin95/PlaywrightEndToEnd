@@ -38,7 +38,7 @@ test("Childe browser window page handle", async ({ browser }) => {
   console.log(await page.locator("#username").textContent());
 });
 
-test.only("Create account and save credentials", async ({ page }) => {
+test("Create account and save credentials", async ({ page }) => {
   const playwrightDev = new PlaywrightDevPage(page);
   await playwrightDev.goto();
   await playwrightDev.clickOnRegisterButtonOnLoginPage();
