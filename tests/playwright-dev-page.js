@@ -26,6 +26,7 @@ exports.PlaywrightDevPage = class PlaywrightDevPage {
     this.buttonOkAlertMessege = page.locator("#okayBtn");
     this.buttonAccepteTerms = page.locator("#terms");
     this.titles = page.locator(".card-body a");
+    this.titlesClient = page.locator(".card-body b");
     this.dropdown = page.locator("select.form-control");
     this.blinkingText = page.locator("[href*='documents-request']");
     this.loginPageRegisterButton = page.locator(".text-reset");
@@ -38,6 +39,11 @@ exports.PlaywrightDevPage = class PlaywrightDevPage {
     this.confirmPasswordField = page.locator("#confirmPassword");
     this.checkboxConfirmAge = page.locator('[type="checkbox"]');
     this.alertUserExisting = page.locator("#toast-container div div");
+    this.loginButton = page.locator("#login");
+    this.loginAllert = page.locator("#toast-container div .toast-title");
+    this.products = page.locator(".card-body");
+    this.cartButton = page.locator("[routerlink*='cart']");
+    this.cartTittle = page.locator(".cartSection h3");
   }
 
   async goto(param) {
@@ -85,6 +91,32 @@ exports.PlaywrightDevPage = class PlaywrightDevPage {
     await expect(this.checkBlockMessege).toContainText(
       "Incorrect username/password."
     );
+  }
+
+  async loginInClientPage() {
+    const productName = "adidas original";
+    await this.emailField.fill("test123321@gmail.com");
+    await this.passwordField.fill("!Test123321@gmail.com");
+    await this.loginButton.click();
+    await expect(this.loginAllert).toContainText(" Login Successfully ");
+    await this.page.waitForLoadState("networkidle"),
+      console.log(await this.titlesClient.allTextContents());
+    const count = await this.products.count();
+    for (let i = 0; i < count; ++i) {
+      if (
+        (await this.products.nth(i).locator("b").textContent()) === productName
+      ) {
+        await this.products.nth(i).locator("text= Add To Cart").click();
+        break;
+      }
+    }
+    await expect(this.alertUserExisting).toContainText(
+      " Product Added To Cart "
+    );
+    await this.cartButton.click();
+    await expect(this.cartTittle).toContainText("adidas original");
+    // console.log(count);
+    await this.page.pause();
   }
 
   async loginWithValidCredentials() {
