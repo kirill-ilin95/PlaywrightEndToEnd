@@ -44,6 +44,19 @@ exports.PlaywrightDevPage = class PlaywrightDevPage {
     this.products = page.locator(".card-body");
     this.cartButton = page.locator("[routerlink*='cart']");
     this.cartTittle = page.locator(".cartSection h3");
+    this.checkoutButton = page.locator(".subtotal .btn");
+    this.selectCauntryCheckout = page.locator('[placeholder*="Country"]');
+    this.dropdownResults = page.locator("section .ta-results");
+    this.email = "test123321@gmail.com";
+    this.emailFieldCheckout = page.locator(".user__name label");
+    this.thankYouOrder = page.locator(".hero-primary");
+    this.placeOrder = page.locator(".action__submit");
+    this.orderNumber = page
+      .locator(".em-spacer-1 .ng-star-inserted")
+      .textContent();
+    this.orderPlaced = page.locator('[aria-label*="Order"]');
+    this.orderHistory = page.locator('td [routerlink*="/dashboard"]');
+    this.ordersRow = page.locator('[scope="row"]');
   }
 
   async goto(param) {
@@ -66,7 +79,7 @@ exports.PlaywrightDevPage = class PlaywrightDevPage {
     await expect(this.registerButton).toBeVisible();
     await this.firstNameField.fill("test123321");
     await this.lastNameField.fill("test123321");
-    await this.emailField.fill("test123321@gmail.com");
+    await this.emailField.fill(this.email);
     await this.mobileNumberField.fill("4387777777");
     await this.passwordField.fill("!Test123321@gmail.com");
     await this.confirmPasswordField.fill("!Test123321@gmail.com");
@@ -94,11 +107,14 @@ exports.PlaywrightDevPage = class PlaywrightDevPage {
   }
 
   async loginInClientPage() {
-    const productName = "adidas original";
     await this.emailField.fill("test123321@gmail.com");
     await this.passwordField.fill("!Test123321@gmail.com");
     await this.loginButton.click();
     await expect(this.loginAllert).toContainText(" Login Successfully ");
+  }
+
+  async addProductToCart() {
+    const productName = "adidas original";
     await this.page.waitForLoadState("networkidle"),
       console.log(await this.titlesClient.allTextContents());
     const count = await this.products.count();
@@ -115,7 +131,40 @@ exports.PlaywrightDevPage = class PlaywrightDevPage {
     );
     await this.cartButton.click();
     await expect(this.cartTittle).toContainText("adidas original");
-    // console.log(count);
+  }
+
+  async clickOnCheckoutAndBuyProduct() {
+    await this.checkoutButton.click();
+    await this.selectCauntryCheckout.type("ind", { delay: 100 });
+    await this.dropdownResults.waitFor();
+    const optionsCount = await this.dropdownResults.locator("button").count();
+    for (let i = 0; i < optionsCount; ++i) {
+      const text = await this.dropdownResults
+        .locator("button")
+        .nth(i)
+        .textContent();
+      if (text === " India") {
+        await this.dropdownResults.locator("button").nth(i).click();
+        break;
+      }
+    }
+    await expect(this.emailFieldCheckout).toHaveText(this.email);
+    await this.placeOrder.click();
+    await expect(this.thankYouOrder).toHaveText(" Thankyou for the order. ");
+    const order = await this.orderNumber;
+    console.log(order);
+    await expect(this.orderPlaced).toBeVisible();
+    await expect(this.orderPlaced).toHaveText(" Order Placed Successfully ");
+    await this.orderHistory.click();
+    await this.page.waitForLoadState("networkidle");
+    const count = await this.ordersRow.count();
+    for (let i = 0; i < count; ++i) {
+      if ((await this.ordersRow.nth(i).textContent()) === order) {
+        await this.ordersRow.nth(i).expect(order);
+        break;
+      }
+    }
+
     await this.page.pause();
   }
 

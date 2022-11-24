@@ -44,8 +44,10 @@ test("Create account and save credentials", async ({ page }) => {
   await playwrightDev.clickOnRegisterButtonOnLoginPage();
 });
 
-test.only("Login with valid credentials", async ({ page }) => {
+test.only("Login with valid credentials and buy product", async ({ page }) => {
   const playwrightDev = new PlaywrightDevPage(page);
   await playwrightDev.goto();
   await playwrightDev.loginInClientPage();
+  await playwrightDev.addProductToCart();
+  await playwrightDev.clickOnCheckoutAndBuyProduct();
 });
